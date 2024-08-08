@@ -54,18 +54,16 @@ class Options:
         self.usejsonfile = False
         self.jsonfilepath = ""
         self.val =""
+        self.info = False
     def parse_arguments(self):
                 
         arguments = sys.argv[1:]
         
         
         for i in range(0,len(arguments)):
-            print(arguments[i])
             if i ==0:
                 self.val = arguments[i]
             if arguments[i] == "--no-worldfile":
-                self.worldfile = False
-            if arguments[i] == "--save-worldfile":
                 self.worldfile = False
             if arguments[i] == "-i" or arguments[i] == "--input":
                 try:
@@ -74,9 +72,9 @@ class Options:
                     pass
             if arguments[i] == "--save-json":
                 self.savejson = True
-            if arguments[i] == "--no-json":
-                self.savejson = False
-            if arguments[i] == "--loadfromjson":
+            if arguments[i] == "--info":
+                self.info = True
+            if arguments[i] == "--load-from-json":
                 try:
                     self.jsonfilepath = arguments[i+1]
                     self.usejsonfile = True
@@ -123,11 +121,28 @@ def GetJsonData(options:Options):
     return json.loads(jsontext)
 
 
+def info():
+    print("""
+Usage:
+          fetchlivelox.py filename
+-i       --input               {blobfile}   Specifies input blob name
+         --no-worldfile                     Saves no worldfile
+         --save-json                        Saves the blob json file
+         --load-from-json      {blobfile}   Load the blob file from a local file
+         --info                             Shows info
+        """)
+
+
+
 def main():
 
     options = Options()
     options.parse_arguments()
     
+    if options.info:
+        info()
+        return 0
+
     jsondata = GetJsonData(options)
     name = jsondata["map"]["name"]
     
@@ -142,7 +157,7 @@ def main():
     
     downloadimage(jsondata["map"]["url"], name + ".png")
 
-    
+    return 0
 
   
 
