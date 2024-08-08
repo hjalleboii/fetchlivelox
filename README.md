@@ -12,6 +12,7 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
 3. Go to the networks tab
 
 4. Press F5 ro reload the site
+
 5. Find this file with this pattern dddddddddd_ddddddddddddd here it is 0000805135_3931571958146, copy the filename. This file is called the "blob-file" which contains all the data from this class.
  Some events have a differently named blob file. E.g "0000790631_relayLeg_01_3932043026164"\
  The pattern usually looks likw this dddddddddd_*ddddddddddddd \
