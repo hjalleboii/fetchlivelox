@@ -1,4 +1,4 @@
-# FetchLivelod
+# FetchLivelox
 
 Fetch livelox is a script that lets you download a map and the corresponding georeferencing from livelox.com. 
 
@@ -7,15 +7,15 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
 
 1. Go to your desired livelox event in a webbrowser of choice. I will be using chrome in this guide.
 
-![Fig 1](/assets/fig1.png)
+![Fig 1](assets/fig1.png)
 
 2. Press Ctrl + Shift + i or F12 to open the developer tools
 
-![Fig 2](/assets/fig2.png)
+![Fig 2](assets/fig2.png)
 
 3. Go to the networks tab
 
-![Fig 3](/assets/fig3.png)
+![Fig 3](assets/fig3.png)
 
 4. Press F5 ro reload the site
 5. Find this file with this pattern dddddddddd_ddddddddddddd here it is 0000805135_3931571958146, copy the filename. This file is called the "blob-file" which contains all the data from this class.
@@ -26,4 +26,4 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
 > \* is a wild card, and can be anything. \
 
 
-![Fig 4](/assets/fig4.png)
+![Fig 4](assets/fig4.png)
