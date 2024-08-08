@@ -16,6 +16,6 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
  Some events have a differently named blob file. E.g "0000790631_relayLeg_01_3932043026164"\
  The pattern usually looks likw this dddddddddd_*ddddddddddddd \
  'd' is a digit\
- '*' is a wild card, and can be anything. \
+ '\*' is a wild card, and can be anything. 
 
 
