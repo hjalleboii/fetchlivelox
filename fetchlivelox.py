@@ -55,6 +55,7 @@ class Options:
         self.jsonfilepath = ""
         self.val =""
         self.info = False
+        self.name = ""
     def parse_arguments(self):
                 
         arguments = sys.argv[1:]
@@ -68,6 +69,11 @@ class Options:
             if arguments[i] == "-i" or arguments[i] == "--input":
                 try:
                     self.val = arguments[i+1]
+                except:
+                    pass
+            if arguments[i] == "-n" or arguments[i] == "--name":
+                try:
+                    self.name = arguments[i+1]
                 except:
                     pass
             if arguments[i] == "--save-json":
@@ -130,6 +136,7 @@ Usage:
          --save-json                        Saves the blob json file
          --load-from-json      {blobfile}   Load the blob file from a local file
          --info                             Shows info
+-n       --name                {mapname}    Sets the name of the output map
         """)
 
 
@@ -144,7 +151,10 @@ def main():
         return 0
 
     jsondata = GetJsonData(options)
-    name = jsondata["map"]["name"]
+    if options.name =="":
+        name = jsondata["map"]["name"]
+    else:
+        name = options.name
     
     if options.savejson:
         with open(options.val+".json","w") as file:
