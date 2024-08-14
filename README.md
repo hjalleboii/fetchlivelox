@@ -19,4 +19,6 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
  'd' is a digit\
  '\*' is a wild card, and can be anything. 
 
-
+6. Type these commands in the terminal:
+    >$ chmod fetchlivelox.py +x 
+    >$ ./fetchlivelox.py {blob_filename}
