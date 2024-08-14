@@ -21,4 +21,5 @@ Fetch livelox is a script that lets you download a map and the corresponding geo
 
 6. Type these commands in the terminal:
     >$ chmod fetchlivelox.py +x 
+    
     >$ ./fetchlivelox.py {blob_filename}
