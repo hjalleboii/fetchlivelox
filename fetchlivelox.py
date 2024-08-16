@@ -1,3 +1,4 @@
+#!/bin/bash
 import requests
 import json
 import sys
