@@ -8,9 +8,15 @@ usage: main.py [-h] [-N NAME] urlorclassid
 
 Downloads Maps from livelox.com
 
-positional arguments:
-  urlorclassid          url to livelox event or classId
-
-options:
-  -h, --help            show this help message and exit
-  -N NAME, --name NAME  Name of the map, defaults to the name provided by livelox
+>positional arguments:
+>
+>urlorclassid          url to livelox event or classId
+>
+>
+>
+>options:
+>
+>  -h, --help            show this help message and exit
+>
+>  -N NAME, --name NAME  Name of the map, defaults to the name provided by livelox
+>
