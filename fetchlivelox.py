@@ -1,8 +1,10 @@
-#!/bin/python3
+#!/usr/bin/env python3
 import requests
+import argparse
 import json
 import sys
 
+from urllib.parse import urlparse, parse_qs
 
 
 
@@ -38,144 +40,55 @@ class PGW:
 
         self.c = pos[3][0]   
         self.f = pos[3][1]        
-        
-
-
-
 
     def write(self,file):
         with open(file,"w") as file:
             file.write(format(self.a, '.15f') + "\n" + format(self.d, '.15f') + "\n" + format(self.b, '.15f') + "\n" + format(self.e, '.15f') + "\n" + format(self.c, '.15f') + "\n" + format(self.f, '.15f') + "\n")
             
 
-class Options:
-    def __init__(self) -> None:
-        self.worldfile = True
-        self.savejson = False
-        self.usejsonfile = False
-        self.jsonfilepath = ""
-        self.val =""
-        self.info = False
-        self.name = ""
-    def parse_arguments(self):
-                
-        arguments = sys.argv[1:]
-        
-        
-        for i in range(0,len(arguments)):
-            if i ==0:
-                self.val = arguments[i]
-            if arguments[i] == "--no-worldfile":
-                self.worldfile = False
-            if arguments[i] == "-i" or arguments[i] == "--input":
-                try:
-                    self.val = arguments[i+1]
-                except:
-                    pass
-            if arguments[i] == "-n" or arguments[i] == "--name":
-                try:
-                    self.name = arguments[i+1]
-                except:
-                    pass
-            if arguments[i] == "--save-json":
-                self.savejson = True
-            if arguments[i] == "--info":
-                self.info = True
-            if arguments[i] == "--load-from-json":
-                try:
-                    self.jsonfilepath = arguments[i+1]
-                    self.usejsonfile = True
 
-                except:
-                    pass
+def parseargs():
+    parser = argparse.ArgumentParser(description="Downloads Maps from livelox.com")
+    parser.add_argument("urlorclassid",help="url to livelox event or classId")
+    parser.add_argument("-N","--name",type=str, required = False,help="Name of the map, defaults to the name provided by livelox",default="")
+
+    return parser.parse_args()
+
+args = parseargs()
+class_id = 0
+try:
+    class_id = int(args.urlorclassid)
+except:
+    query = urlparse(args.urlorclassid).query
+    params = parse_qs(query)
+    class_id = params.get('classId', [None])[0]
+
+session = requests.Session()
+
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Language": "en",
+    "Connection": "keep-alive",
+})
+
+ajax_headers = {
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Content-Type": "application/json",
+    "Origin": "https://www.livelox.com",
+    "X-Requested-With": "XMLHttpRequest"
+}
+
+r2 = session.post("https://www.livelox.com/Data/ClassBlob",json={"classIds":[class_id],"includeMap":True},headers=ajax_headers)
+
+jsondata = r2.json()
 
 
+pgw = PGW(jsondata)
 
+name = (jsondata["map"]["name"] if args.name == "" else args.name) +"_"+pgw.type
 
-
-def getfromclassstorageid(id):
-    response = requests.get("https://livelox.blob.core.windows.net/class-storage/" +id)
-    print(f"Request:  Status[{response.status_code}]  \"https://livelox.blob.core.windows.net/class-storage/{id}\"")
-    if(response.status_code == 200):
-        return response.text
-    else:
-        print("Request Failed")
-        exit(1)
-        
-        
-
-
-def downloadimage(url, name):
-    response = requests.get(url)
-    if(response.status_code == 200):
-        with open(name,"wb") as image:
-            image.write(response.content)
-
-
-def GetContentsOfFile(name):
-    with open(name,"rb") as file:
-        return file.read()
-
-
-
-
-def GetJsonData(options:Options):
-    jsontext = ""
-    if not options.usejsonfile:
-        jsontext = getfromclassstorageid(options.val)
-    else:
-        jsontext = GetContentsOfFile(options.jsonfilepath)
-    return json.loads(jsontext)
-
-
-def info():
-    print("""
-Usage:
-          fetchlivelox.py filename
--i       --input               {blobfile}   Specifies input blob name
-         --no-worldfile                     Saves no worldfile
-         --save-json                        Saves the blob json file
-         --load-from-json      {blobfile}   Load the blob file from a local file
-         --info                             Shows info
--n       --name                {mapname}    Sets the name of the output map
-        """)
-
-
-
-def main():
-
-    options = Options()
-    options.parse_arguments()
-    
-    if options.info:
-        info()
-        return 0
-
-    jsondata = GetJsonData(options)
-    if options.name =="":
-        name = jsondata["map"]["name"]
-    else:
-        name = options.name
-    
-    if options.savejson:
-        with open(options.val+".json","w") as file:
-            file.write(json.dumps(options.jsondata,indent=4))
-    if options.worldfile:
-        pgw = PGW(jsondata)
-        name += "_geo-" + pgw.type 
-        pgw.write(name + ".pgw")
-
-    
-    downloadimage(jsondata["map"]["url"], name + ".png")
-
-    return 0
-
-  
-
-
-    
-
-main()
-
-
-
+image_map = session.get(jsondata["map"]["url"]).content
+with open(name+".png","wb") as image:
+    image.write(image_map)
+pgw.write(name+".pgw")
